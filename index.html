@@ -1,1 +1,800 @@
+<!DOCTYPE html>
+
+<html lang="te">
+
+<head>
+
+  <meta charset="UTF-8" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+  <title>తెలుగు → मराठी | 100 कार्ड्स | ऑडिओ + शफल</title>
+
+  <style>
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+
+      font-family: 'Noto Sans Telugu', 'Noto Sans Devanagari', sans-serif;
+
+      background: #f1f5f9;
+
+      padding: 10px;
+
+      min-height: 100vh;
+
+    }
+
+    .header {
+
+      text-align: center;
+
+      color: #0f172a;
+
+      font-size: 1.4rem;
+
+      font-weight: 700;
+
+      margin: 12px 0;
+
+    }
+
+    .controls {
+
+      display: flex;
+
+      justify-content: center;
+
+      gap: 6px;
+
+      flex-wrap: wrap;
+
+      margin: 14px 0;
+
+    }
+
+    button {
+
+      padding: 10px 14px;
+
+      border: none;
+
+      border-radius: 8px;
+
+      font-size: 0.95rem;
+
+      font-weight: 600;
+
+      cursor: pointer;
+
+      transition: all 0.2s;
+
+    }
+
+    button:disabled {
+
+      opacity: 0.45;
+
+      cursor: not-allowed;
+
+    }
+
+    #prev { background: #3b82f6; color: white; }
+
+    #prev:hover:not(:disabled) { background: #2563eb; }
+
+    #flip { background: #10b981; color: white; }
+
+    #flip:hover { background: #059669; }
+
+    #next { background: #3b82f6; color: white; }
+
+    #next:hover:not(:disabled) { background: #2563eb; }
+
+    #shuffle { background: #8b5cf6; color: white; }
+
+    #shuffle:hover { background: #7c3aed; }
+
+    #speak { background: #ef4444; color: white; }
+
+    #speak:hover { background: #dc2626; }
+
+    .card-container {
+
+      perspective: 1000px;
+
+      width: 100%;
+
+      max-width: 480px;
+
+      margin: 0 auto 24px;
+
+    }
+
+    .card {
+
+      width: 100%;
+
+      height: 310px;
+
+      cursor: pointer;
+
+      position: relative;
+
+      transform-style: preserve-3d;
+
+      transition: transform 0.5s ease;
+
+    }
+
+    .card.flipped { transform: rotateY(180deg); }
+
+    .face {
+
+      position: absolute;
+
+      width: 100%;
+
+      height: 100%;
+
+      backface-visibility: hidden;
+
+      border-radius: 16px;
+
+      display: flex;
+
+      flex-direction: column;
+
+      justify-content: center;
+
+      align-items: center;
+
+      padding: 22px;
+
+      text-align: center;
+
+      box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+
+    }
+
+    .front { 
+
+      background: white; 
+
+      border: 2px solid #3b82f6; 
+
+      position: relative;
+
+    }
+
+    .back { 
+
+      background: #0d9488;
+
+      color: white;
+
+      transform: rotateY(180deg);
+
+    }
+
+    .telugu { 
+
+      font-size: 2.4rem; 
+
+      font-weight: 700; 
+
+      line-height: 1.2; 
+
+      font-family: 'Noto Sans Telugu', serif; 
+
+    }
+
+    .pron { 
+
+      font-size: 1.35rem; 
+
+      color: #334155; 
+
+      margin: 10px 0 14px;
+
+      font-family: 'Noto Sans Devanagari', serif; 
+
+    }
+
+    .meaning { 
+
+      font-size: 2.05rem; 
+
+      font-weight: 700; 
+
+      line-height: 1.3; 
+
+      font-family: 'Noto Sans Devanagari', serif; 
+
+    }
+
+    /* 🔊 Speaker icon */
+
+    .speaker-btn {
+
+      position: absolute;
+
+      bottom: 16px;
+
+      right: 16px;
+
+      width: 44px;
+
+      height: 44px;
+
+      border-radius: 50%;
+
+      background: #ef4444;
+
+      color: white;
+
+      display: flex;
+
+      align-items: center;
+
+      justify-content: center;
+
+      font-size: 1.4rem;
+
+      cursor: pointer;
+
+      box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+
+      transition: transform 0.2s;
+
+    }
+
+    .speaker-btn:hover { transform: scale(1.1); }
+
+    .speaker-btn:active { transform: scale(0.95); }
+
+    /* ✅ Counter — prominent */
+
+    .counter {
+
+      text-align: center;
+
+      font-size: 1.35rem;
+
+      font-weight: 700;
+
+      color: #0f172a;
+
+      background: white;
+
+      padding: 12px;
+
+      border-radius: 12px;
+
+      box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+
+      margin: 0 auto 16px;
+
+      max-width: 480px;
+
+    }
+
+    .counter span { color: #1e40af; }
+
+    .status {
+
+      text-align: center;
+
+      font-size: 0.9rem;
+
+      color: #64748b;
+
+      margin-top: 8px;
+
+    }
+
+  </style>
+
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Telugu:wght@400;700&family=Noto+Sans+Devanagari:wght@400;700&display=swap" rel="stylesheet">
+
+</head>
+
+<body>
+
+  <div class="header">తెలుగు → मराठी फ्लॅशकार्ड्स</div>
+
+  <div class="controls">
+
+    <button id="prev">← मागे</button>
+
+    <button id="flip">फ्लिप</button>
+
+    <button id="next">पुढे →</button>
+
+    <button id="shuffle">🔀 शफल</button>
+
+    <button id="speak">🔊 ऐका</button>
+
+  </div>
+
+  <div class="card-container">
+
+    <div class="card" id="card">
+
+      <div class="face front">
+
+        <div class="telugu" id="telugu">నమస్కారం</div>
+
+        <div class="pron" id="pron">नमस्कारम्</div>
+
+        <div class="speaker-btn" id="speaker">🔊</div>
+
+      </div>
+
+      <div class="face back">
+
+        <div class="meaning" id="meaning">नमस्कार</div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <div class="counter">
+
+    कार्ड क्रमांक: <span id="current">1</span> / <span id="total">100</span>
+
+  </div>
+
+  <div class="status" id="status">पहिल्या कार्डवर टॅप करा → ऑडिओ सुरू होईल</div>
+
+  <script>
+
+    // ✅ 100 Cards
+
+    const DATA = [
+
+      ["నమస్కారం", "नमस्कारम्", "नमस्कार"],
+
+      ["హలో", "हलो", "हॅलो"],
+
+      ["ధన్యవాదాలు", "धन्यवादालु", "धन्यवाद"],
+
+      ["క్షమించండి", "क्षमिंचंडि", "माफ करा"],
+
+      ["అవును", "अवुनु", "होय"],
+
+      ["కాదు", "कादु", "नाही"],
+
+      ["ఎలా ఉన్నారు?", "एला उन्नारु?", "तुम्ही कसे आहात?"],
+
+      ["బాగున్నాను", "बागुन्नानु", "मी ठीक आहे"],
+
+      ["మీ పేరు ఏమిటి?", "मी पेरु एमिटि?", "तुमचं नाव काय आहे?"],
+
+      ["నా పేరు", "ना पेरु", "माझं नाव"],
+
+      ["మీరు ఎక్కడ నుండి వచ్చారు?", "मीरु एक्कड नुंडि वच्चारु?", "तुम्ही कुठून आलात?"],
+
+      ["నేను", "नेनु", "मी"],
+
+      ["మీరు", "मीरु", "तुम्ही"],
+
+      ["అతను", "अतनु", "तो"],
+
+      ["ఆమె", "आमे", "ती"],
+
+      ["మేము", "मेमु", "आम्ही"],
+
+      ["వారు", "वारु", "ते"],
+
+      ["ఇది", "इदि", "हे"],
+
+      ["అది", "अदि", "ते"],
+
+      ["ఇక్కడ", "इक्कड", "इथे"],
+
+      ["అక్కడ", "अक्कड", "तिथे"],
+
+      ["ఇప్పుడు", "इप्पुडु", "आत्ता"],
+
+      ["తర్వాత", "तर्वात", "नंतर"],
+
+      ["ముందు", "मुंदु", "आधी"],
+
+      ["ఈరోజు", "ईरोजु", "आज"],
+
+      ["రేపు", "रेपु", "उद्या"],
+
+      ["నిన్న", "निन्न", "काल"],
+
+      ["ఉదయం", "उदयम्", "सकाळ"],
+
+      ["మధ్యాహ్నం", "मध्याह्नम्", "दुपार"],
+
+      ["సాయంత్రం", "सायंत्रम्", "संध्याकाळ"],
+
+      ["రాత్రి", "रात्रि", "रात्री"],
+
+      ["సంవత్సరం", "संवत्सरम्", "वर्ष"],
+
+      ["నెల", "नेल", "महिना"],
+
+      ["వారం", "वारम्", "आठवडा"],
+
+      ["రోజు", "रोजु", "दिवस"],
+
+      ["గంట", "गंट", "तास"],
+
+      ["నిమిషం", "निमिषम्", "मिनिट"],
+
+      ["సెకను", "सेकनु", "सेकंद"],
+
+      ["అమ్మ", "अम्म", "आई"],
+
+      ["నాన్న", "नान्न", "वडील"],
+
+      ["భార్య", "भार्य", "बायको"],
+
+      ["భర్త", "भर्त", "नवरा"],
+
+      ["కుమారుడు", "कुमारुडु", "मुलगा"],
+
+      ["కుమార్తె", "कुमार्ते", "मुलगी"],
+
+      ["సోదరుడు", "सोदरुडु", "भाऊ"],
+
+      ["సోదరి", "सोदरि", "बहीण"],
+
+      ["తాత", "तात", "आजोबा"],
+
+      ["అమ్మమ్మ", "अम्मम्म", "आजी"],
+
+      ["మామ", "माम", "मामा"],
+
+      ["అత్త", "अत्त", "आत्या"],
+
+      ["మామయ్య", "मामय्य", "मामाजी"],
+
+      ["అక్క", "अक्क", "मावशी"],
+
+      ["చిన్నమ్మ", "चिन्नम्म", "काकू"],
+
+      ["ఒకటి", "ओकटि", "एक"],
+
+      ["రెండు", "रेंडु", "दोन"],
+
+      ["మూడు", "मूडु", "तीन"],
+
+      ["నాలుగు", "नालुगु", "चार"],
+
+      ["ఐదు", "ऐदु", "पाच"],
+
+      ["ఆరు", "आरु", "सहा"],
+
+      ["ఏడు", "एडु", "सात"],
+
+      ["ఎనిమిది", "एनिमिदि", "आठ"],
+
+      ["తొమ్మిది", "तोम्मिदि", "नऊ"],
+
+      ["పది", "पदि", "दहा"],
+
+      ["పదకొండు", "पदकोंडु", "अकरा"],
+
+      ["పన్నెండు", "पन्नेंडु", "बारा"],
+
+      ["పదమూడు", "पदमूडु", "तेरा"],
+
+      ["పద్నాలుగు", "पद्नालुगु", "चौदा"],
+
+      ["పదిహేను", "पदिहेनु", "पंधरा"],
+
+      ["పదహారు", "पदहारु", "सोळा"],
+
+      ["పదిహేడు", "पदिहेडु", "सतरा"],
+
+      ["పద్దెనిమిది", "पद्देनिमिदि", "अठरा"],
+
+      ["పందొమ్మిది", "पंदोम्मिदि", "एकोणीस"],
+
+      ["ఇరవై", "इरवै", "वीस"],
+
+      ["ముప్పై", "मुप्पै", "तीस"],
+
+      ["నలభై", "नलभै", "चाळीस"],
+
+      ["యాభై", "याभै", "पन्नास"],
+
+      ["అరవై", "अरवै", "साठ"],
+
+      ["డెబ్బై", "डेब्भै", "सत्तर"],
+
+      ["ఎనభై", "एनभै", "ऐंशी"],
+
+      ["తొంభై", "तोंभै", "नव्वद"],
+
+      ["వంద", "वंद", "शंभर"],
+
+      ["మంచిది", "मंचिदि", "चांगले"],
+
+      ["చెడు", "चेडु", "वाईट"],
+
+      ["పెద్దది", "पेद्ददि", "मोठे"],
+
+      ["చిన్నది", "चिन्नदि", "लहान"],
+
+      ["కొత్తది", "कोत्तदि", "नवीन"],
+
+      ["పాతది", "पातदि", "जुने"],
+
+      ["ఎక్కడ?", "एक्कड?", "कुठे?"],
+
+      ["ఎందుకు?", "एंदुकु?", "का?"],
+
+      ["ఎప్పుడు?", "एप्पुडु?", "कधी?"],
+
+      ["ఎవరు?", "एवरु?", "कोण?"],
+
+      ["ఏమిటి?", "एमिटि?", "काय?"],
+
+      ["ఎలా?", "एला?", "कसे?"],
+
+      ["తినడం", "तिनडम्", "खाणे"],
+
+      ["తాగడం", "तागडम्", "पिणे"],
+
+      ["వెళ్ళడం", "वेळ्ळडम्", "जाणे"],
+
+      ["రావడం", "रावडम्", "येणे"],
+
+      ["చూడడం", "चूडडम्", "पाहणे"],
+
+      ["చెప్పడం", "चेप्पडम्", "सांगणे"],
+
+      ["వినడం", "विनडम्", "ऐकणे"],
+
+      ["చదవడం", "चदवडम्", "वाचणे"],
+
+      ["వ్రాయడం", "व्रायडम्", "लिहिणे"],
+
+      ["నవ్వడం", "नव्वडम्", "हसणे"],
+
+      ["ఏడవడం", "एडवडम्", "रडणे"],
+
+      ["ఇష్టం", "इष्टम्", "आवड"],
+
+      ["ఇష్టం లేదు", "इष्टम् लेदु", "आवडत नाही"],
+
+      ["సరే", "सरे", "ठीक आहे"],
+
+      ["సరిగ్గా", "सरिग्गा", "बरोबर"],
+
+      ["ఖాళీ", "खाळी", "रिकामे"],
+
+      ["నీరు", "नीरु", "पाणी"],
+
+      ["ఆహారం", "आहारम्", "अन्न"],
+
+      ["పాలు", "पालु", "दूध"],
+
+      ["పండు", "पंडु", "फळ"],
+
+      ["కాయ", "काय", "भाजी"],
+
+      ["ఇల్లు", "इल्लु", "घर"],
+
+      ["బడి", "बडि", "शाळा"],
+
+      ["ఆసుపత్రి", "आसुपत्रि", "रुग्णालय"],
+
+      ["బస్సు", "बस्सु", "बस"],
+
+      ["రైలు", "रैलु", "रेल्वे"]
+
+    ];
+
+    // DOM
+
+    const cardEl = document.getElementById('card');
+
+    const teluguEl = document.getElementById('telugu');
+
+    const pronEl = document.getElementById('pron');
+
+    const meaningEl = document.getElementById('meaning');
+
+    const currentEl = document.getElementById('current');
+
+    const totalEl = document.getElementById('total');
+
+    const prevBtn = document.getElementById('prev');
+
+    const nextBtn = document.getElementById('next');
+
+    const flipBtn = document.getElementById('flip');
+
+    const shuffleBtn = document.getElementById('shuffle');
+
+    const speakBtn = document.getElementById('speak');
+
+    const speakerIcon = document.getElementById('speaker');
+
+    const statusEl = document.getElementById('status');
+
+    // State
+
+    let cards = [...DATA];
+
+    let currentIndex = 0;
+
+    let userInteracted = false;
+
+    const TOTAL = cards.length;
+
+    // 🔊 Audio: Reusable, gesture-safe player
+
+    function playTelugu(text) {
+
+      if (!text) return;
+
+      const url = `https://translate.google.com/translate_tts?ie=UTF-8&q=${encodeURIComponent(text)}&tl=te&client=tw-ob&ttsspeed=0.9`;
+
+      const audio = new Audio(url);
+
+      audio.volume = 0.95;
+
+      return audio.play().catch(err => {
+
+        if (!userInteracted) {
+
+          statusEl.textContent = "ऑडिओसाठी कृपया कार्ड किंवा 🔊 वर टॅप करा";
+
+          setTimeout(() => { statusEl.textContent = ""; }, 3000);
+
+        }
+
+      });
+
+    }
+
+    // ✅ Render card + auto-play (if allowed)
+
+    function render() {
+
+      const [tel, pro, mar] = cards[currentIndex];
+
+      teluguEl.textContent = tel;
+
+      pronEl.textContent = pro;
+
+      meaningEl.textContent = mar;
+
+      currentEl.textContent = currentIndex + 1;
+
+      totalEl.textContent = TOTAL;
+
+      prevBtn.disabled = currentIndex === 0;
+
+      nextBtn.disabled = currentIndex === TOTAL - 1;
+
+      cardEl.classList.remove('flipped');
+
+      // 🔊 Auto-play on card show — only after first user interaction
+
+      if (userInteracted) {
+
+        playTelugu(tel);
+
+      }
+
+    }
+
+    // 🔀 Shuffle
+
+    function shuffleArray(arr) {
+
+      for (let i = arr.length - 1; i > 0; i--) {
+
+        const j = Math.floor(Math.random() * (i + 1));
+
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+
+      }
+
+    }
+
+    // 🎯 Setup user interaction flag
+
+    function onUserGesture() {
+
+      if (!userInteracted) {
+
+        userInteracted = true;
+
+        statusEl.textContent = "ऑडिओ सक्षम ✅";
+
+        setTimeout(() => { statusEl.textContent = ""; }, 2000);
+
+        // Play current card immediately after first tap
+
+        const [tel] = cards[currentIndex];
+
+        playTelugu(tel);
+
+      }
+
+    }
+
+    // Bind events
+
+    [cardEl, speakerIcon, speakBtn, flipBtn, prevBtn, nextBtn, shuffleBtn].forEach(el => {
+
+      el.addEventListener('click', onUserGesture, { once: true });
+
+    });
+
+    prevBtn.onclick = () => { if (currentIndex > 0) { currentIndex--; render(); } };
+
+    nextBtn.onclick = () => { if (currentIndex < TOTAL - 1) { currentIndex++; render(); } };
+
+    flipBtn.onclick = () => cardEl.classList.toggle('flipped');
+
+    cardEl.onclick = (e) => {
+
+      if (!e.target.closest('.speaker-btn')) {
+
+        cardEl.classList.toggle('flipped');
+
+      }
+
+    };
+
+    speakerIcon.onclick = () => {
+
+      onUserGesture();
+
+      const [tel] = cards[currentIndex];
+
+      playTelugu(tel);
+
+    };
+
+    speakBtn.onclick = () => {
+
+      onUserGesture();
+
+      const [tel] = cards[currentIndex];
+
+      playTelugu(tel);
+
+    };
+
+    shuffleBtn.onclick = () => {
+
+      onUserGesture();
+
+      cards = DATA.map(x => [...x]);
+
+      shuffleArray(cards);
+
+      currentIndex = 0;
+
+      render();
+
+    };
+
+    // 🚀 Init
+
+    totalEl.textContent = TOTAL;
+
+    render();
+
+  </script>
+
+</body>
+
+</html>
 
