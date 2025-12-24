@@ -217,46 +217,10 @@
       font-family: 'Noto Sans Devanagari', serif; 
 
     }
+ 
+  
 
-    /* 🔊 Speaker icon */
-
-    .speaker-btn {
-
-      position: absolute;
-
-      bottom: 16px;
-
-      right: 16px;
-
-      width: 44px;
-
-      height: 44px;
-
-      border-radius: 50%;
-
-      background: #ef4444;
-
-      color: white;
-
-      display: flex;
-
-      align-items: center;
-
-      justify-content: center;
-
-      font-size: 1.4rem;
-
-      cursor: pointer;
-
-      box-shadow: 0 3px 8px rgba(0,0,0,0.2);
-
-      transition: transform 0.2s;
-
-    }
-
-    .speaker-btn:hover { transform: scale(1.1); }
-
-    .speaker-btn:active { transform: scale(0.95); }
+    
 
     /* ✅ Counter — prominent */
 
@@ -317,8 +281,9 @@
     <button id="next">पुढे →</button>
 
     <button id="shuffle">🔀 शफल</button>
-
+    <!--
     <button id="speak">🔊 ऐका</button>
+    -->
 
   </div>
 
@@ -332,7 +297,7 @@
 
         <div class="pron" id="pron">नमस्कारम्</div>
 
-        <div class="speaker-btn" id="speaker">🔊</div>
+      
 
       </div>
 
@@ -351,9 +316,9 @@
     कार्ड क्रमांक: <span id="current">1</span> / <span id="total">100</span>
 
   </div>
-
+<!--
   <div class="status" id="status">पहिल्या कार्डवर टॅप करा → ऑडिओ सुरू होईल</div>
-
+-->
   <script>
 
     // ✅ 100 Cards
@@ -622,9 +587,8 @@
 
     const shuffleBtn = document.getElementById('shuffle');
 
-    const speakBtn = document.getElementById('speak');
-
-    const speakerIcon = document.getElementById('speaker');
+    
+ 
 
     const statusEl = document.getElementById('status');
 
@@ -639,8 +603,8 @@
     const TOTAL = cards.length;
 
     // 🔊 Audio: Reusable, gesture-safe player
-
-    function playTelugu(text) {
+/*
+function playTelugu(text) {
 
       if (!text) return;
 
@@ -663,7 +627,7 @@
       });
 
     }
-
+*/
     // ✅ Render card + auto-play (if allowed)
 
     function render() {
@@ -688,12 +652,7 @@
 
       // 🔊 Auto-play on card show — only after first user interaction
 
-      if (userInteracted) {
-
-        playTelugu(tel);
-
-      }
-
+      
     }
 
     // 🔀 Shuffle
@@ -712,24 +671,7 @@
 
     // 🎯 Setup user interaction flag
 
-    function onUserGesture() {
-
-      if (!userInteracted) {
-
-        userInteracted = true;
-
-        statusEl.textContent = "ऑडिओ सक्षम ✅";
-
-        setTimeout(() => { statusEl.textContent = ""; }, 2000);
-
-        // Play current card immediately after first tap
-
-        const [tel] = cards[currentIndex];
-
-        playTelugu(tel);
-
-      }
-
+    
     }
 
     // Bind events
@@ -756,26 +698,8 @@
 
     };
 
-    speakerIcon.onclick = () => {
-
-      onUserGesture();
-
-      const [tel] = cards[currentIndex];
-
-      playTelugu(tel);
-
-    };
-
-    speakBtn.onclick = () => {
-
-      onUserGesture();
-
-      const [tel] = cards[currentIndex];
-
-      playTelugu(tel);
-
-    };
-
+    
+     
     shuffleBtn.onclick = () => {
 
       onUserGesture();
